@@ -1,0 +1,57 @@
+import convict from 'convict';
+
+const conf = convict({
+  appId:'',
+  tusiArtApiUrl: '',
+  env: {
+    format: ['development', 'production', 'test'],
+    default: 'development',
+    env: 'NODE_ENV',
+  },
+  oss: {
+    accessKeyId: '',
+    accessKeySecret: '',
+    bucket: '',
+    region: '',
+    endPoint : ''
+  },
+  server: {
+    port: {
+      format: 'port',
+      default: 3000,
+      env: 'NODE_PORT',
+    },
+  },
+  database: {
+    host: {
+      format: '*',
+      // default: 'localhost',
+      default: '192.168.65.1',
+      env: 'DB_HOST',
+    },
+    port: {
+      format: 'port',
+      default: 5433,
+      env: 'DB_PORT',
+    },
+    name: {
+      format: '*',
+      default: 'postgres',
+      env: 'DB_NAME',
+    },
+    username: {
+      format: '*',
+      default: 'postgres',
+      env: 'DB_USERNAME',
+    },
+    password: {
+      format: '*',
+      default: 'postgres',
+      env: 'DB_PASSWORD',
+    },
+  },
+});
+
+conf.validate({ allowed: 'strict' });
+
+export default conf.getProperties();

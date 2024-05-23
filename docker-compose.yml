@@ -1,0 +1,52 @@
+version: '3.0'
+
+services:
+
+    web:
+        stdin_open: true
+        environment:
+            - CHOKIDAR_USEPOLLING=true
+        build:
+            context: ./web
+            dockerfile: Dockerfile.dev
+        ports:
+            - '3001:3001'
+        volumes:
+            - /app/node_modules
+            - ./web:/app
+        depends_on:
+            - api
+
+    api:
+        build: ./api/
+        environment:
+            DB_HOST: postgres
+            DB_PORT: 5432
+            DB_NAME: postgres
+            DB_USERNAME: postgres
+            DB_PASSWORD: postgres
+        ports:
+            - 3000:3000
+        volumes:
+            - ./api/src:/app/src
+        depends_on:
+            - postgres
+
+    postgres:
+        image: postgres:9.5.20
+        ports:
+            # debugging purposes only, you may change it if its conflicting
+            - 5432:5432
+        volumes:
+            - /var/lib/postgresql/data
+
+    # nginx:
+    #     image: nginx:latest
+    #     container_name: nginx-container
+    #     volumes:
+    #         - ./nginx/conf.d:/etc/nginx/conf.d
+    #     ports:
+    #         - 80:80
+    #         - 443:443
+    #     depends_on:
+    #         - api
